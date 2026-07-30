@@ -1354,10 +1354,10 @@ const PACKAGES = [
   { id:'daily60',  category:'每日限購', name:'鎏金禮 珍貴',  ntd:15, limit:1, poolScope:'any', red:60, requiresMonthCard:true, repeatable:'day' },
   { id:'daily90',  category:'每日限購', name:'鎏金禮 璀璨',  ntd:30, limit:1, poolScope:'any', red:90, requiresMonthCard:true, repeatable:'day' },
 
-  // ---- 週卡（需月卡資格）----
-  { id:'weekcard', category:'周卡', name:'鎏金禮（一週）', ntd:220, limit:1, poolScope:'any', red:1050, requiresMonthCard:true, repeatable:'week' },
+  // ---- 週卡（需月卡資格，可無限續購）----
+  { id:'weekcard', category:'周卡', name:'鎏金禮（一週）', ntd:220, limit:'unlimited', poolScope:'any', red:1050, requiresMonthCard:true, repeatable:'week' },
 
-  // ---- 首儲雙倍（紫鑽，買1送1紅鑽，非雙倍紫鑽；每檔限購1次，用於首購優惠尚在時）----
+  // ---- 首儲雙倍（紫鑽，買1送1紅鑽，非雙倍紫鑽；每檔限購1次）----
   { id:'firstpay60',   category:'首儲雙倍', name:'紫鑽60',   ntd:30,   limit:1, poolScope:'any', purple:60,   redBonus:60,   firstPay:true },
   { id:'firstpay300',  category:'首儲雙倍', name:'紫鑽300',  ntd:150,  limit:1, poolScope:'any', purple:300,  redBonus:300,  firstPay:true },
   { id:'firstpay450',  category:'首儲雙倍', name:'紫鑽450',  ntd:220,  limit:1, poolScope:'any', purple:450,  redBonus:450,  firstPay:true },
@@ -1366,16 +1366,16 @@ const PACKAGES = [
   { id:'firstpay3280', category:'首儲雙倍', name:'紫鑽3280', ntd:1490, limit:1, poolScope:'any', purple:3280, redBonus:3280, firstPay:true },
   { id:'firstpay6480', category:'首儲雙倍', name:'紫鑽6480', ntd:2990, limit:1, poolScope:'any', purple:6480, redBonus:6480, firstPay:true },
 
-  // ---- 常態儲值（首購優惠用完後，同金額同紫鑽量，但無紅鑽贈送；可重複購買）----
-  { id:'normalpay60',   category:'常態儲值', name:'紫鑽60（常態）',   ntd:30,   limit:'unlimited', poolScope:'any', purple:60,   repeatable:true },
-  { id:'normalpay300',  category:'常態儲值', name:'紫鑽300（常態）',  ntd:150,  limit:'unlimited', poolScope:'any', purple:300,  repeatable:true },
-  { id:'normalpay450',  category:'常態儲值', name:'紫鑽450（常態）',  ntd:220,  limit:'unlimited', poolScope:'any', purple:450,  repeatable:true },
-  { id:'normalpay980',  category:'常態儲值', name:'紫鑽980（常態）',  ntd:490,  limit:'unlimited', poolScope:'any', purple:980,  repeatable:true },
-  { id:'normalpay1980', category:'常態儲值', name:'紫鑽1980（常態）', ntd:890,  limit:'unlimited', poolScope:'any', purple:1980, repeatable:true },
-  { id:'normalpay3280', category:'常態儲值', name:'紫鑽3280（常態）', ntd:1490, limit:'unlimited', poolScope:'any', purple:3280, repeatable:true },
-  { id:'normalpay6480', category:'常態儲值', name:'紫鑽6480（常態）', ntd:2990, limit:'unlimited', poolScope:'any', purple:6480, repeatable:true },
+  // ---- 常態儲值（首購優惠用完後，同金額同紫鑽量，但無紅鑽贈送；可無限重複購買）----
+  { id:'normalpay60',   category:'常態儲值', name:'紫鑽60（常態）',   ntd:30,   limit:'unlimited', poolScope:'any', purple:60 },
+  { id:'normalpay300',  category:'常態儲值', name:'紫鑽300（常態）',  ntd:150,  limit:'unlimited', poolScope:'any', purple:300 },
+  { id:'normalpay450',  category:'常態儲值', name:'紫鑽450（常態）',  ntd:220,  limit:'unlimited', poolScope:'any', purple:450 },
+  { id:'normalpay980',  category:'常態儲值', name:'紫鑽980（常態）',  ntd:490,  limit:'unlimited', poolScope:'any', purple:980 },
+  { id:'normalpay1980', category:'常態儲值', name:'紫鑽1980（常態）', ntd:890,  limit:'unlimited', poolScope:'any', purple:1980 },
+  { id:'normalpay3280', category:'常態儲值', name:'紫鑽3280（常態）', ntd:1490, limit:'unlimited', poolScope:'any', purple:3280 },
+  { id:'normalpay6480', category:'常態儲值', name:'紫鑽6480（常態）', ntd:2990, limit:'unlimited', poolScope:'any', purple:6480 },
 
-  // ---- 限定月卡混池禮包（含混池禮包分類的深空許願券八，皆歸屬mixed）----
+  // ---- 限定月卡混池禮包 ----
   { id:'mixed_pact', category:'限定月卡混池禮包', name:'混池密約',       ntd:150, limit:1,  poolScope:'mixed', ticket:10, ticketType:'深空許願券' },
   { id:'mixed_t1',   category:'限定月卡混池禮包', name:'深空許願券 一', ntd:15,  limit:5,  poolScope:'mixed', ticket:1,  ticketType:'深空許願券' },
   { id:'mixed_t2',   category:'限定月卡混池禮包', name:'深空許願券 二', ntd:30,  limit:3,  poolScope:'mixed', ticket:2,  ticketType:'深空許願券' },
@@ -1396,12 +1396,12 @@ const PACKAGES = [
   { id:'daily_t7', category:'限定日卡禮包', name:'深空許願券 七', ntd:1690,limit:1,  poolScope:'daily', ticket:40, ticketType:'深空許願券' },
 
   // ---- 單人月卡禮包 ----
-  { id:'monthly_t1', category:'單人月卡禮包', name:'極空許願券 一', ntd:15,  limit:3,  poolScope:'monthly', ticket:1,  ticketType:'極空許願券' },
-  { id:'monthly_t2', category:'單人月卡禮包', name:'極空許願券 二', ntd:30,  limit:3,  poolScope:'monthly', ticket:2,  ticketType:'極空許願券' },
-  { id:'monthly_t3', category:'單人月卡禮包', name:'極空許願券 三', ntd:150, limit:3,  poolScope:'monthly', ticket:6,  ticketType:'極空許願券' },
-  { id:'monthly_t4', category:'單人月卡禮包', name:'極空許願券 四', ntd:290, limit:2,  poolScope:'monthly', ticket:10, ticketType:'極空許願券' },
-  { id:'monthly_t5', category:'單人月卡禮包', name:'極空許願券 五', ntd:390, limit:2,  poolScope:'monthly', ticket:12, ticketType:'極空許願券' },
-  { id:'monthly_t6', category:'單人月卡禮包', name:'極空許願券 六', ntd:590, limit:10, poolScope:'monthly', ticket:20, ticketType:'極空許願券' },
+  { id:'monthly_t1', category:'單人月卡禮包', name:'深空許願券 一', ntd:15,  limit:3,  poolScope:'monthly', ticket:1,  ticketType:'深空許願券' },
+  { id:'monthly_t2', category:'單人月卡禮包', name:'深空許願券 二', ntd:30,  limit:3,  poolScope:'monthly', ticket:2,  ticketType:'深空許願券' },
+  { id:'monthly_t3', category:'單人月卡禮包', name:'深空許願券 三', ntd:150, limit:3,  poolScope:'monthly', ticket:6,  ticketType:'深空許願券' },
+  { id:'monthly_t4', category:'單人月卡禮包', name:'深空許願券 四', ntd:290, limit:2,  poolScope:'monthly', ticket:10, ticketType:'深空許願券' },
+  { id:'monthly_t5', category:'單人月卡禮包', name:'深空許願券 五', ntd:390, limit:2,  poolScope:'monthly', ticket:12, ticketType:'深空許願券' },
+  { id:'monthly_t6', category:'單人月卡禮包', name:'深空許願券 六', ntd:590, limit:10, poolScope:'monthly', ticket:20, ticketType:'深空許願券' },
 
   // ---- 復刻日卡禮包 ----
   { id:'rdaily_t1', category:'復刻日卡禮包', name:'時光許願券 一', ntd:30,  limit:1,  poolScope:'reprint_daily', ticket:2,  ticketType:'時光許願券' },
@@ -1837,126 +1837,90 @@ function optimalPurchasePlanBestInRange(candidates, minTarget, maxTarget){
    ------------------------------------------------------------
    回傳: { picks: [{pkgId, name, qty, ntd}], totalNTD, totalTickets, stillShort }
    ------------------------------------------------------------ */
+/* ------------------------------------------------------------
+   補抽推薦（純貪婪法）
+   ------------------------------------------------------------
+   遊戲內許願券禮包本身就是「金額越高、單價越貴」的遞增結構設計，
+   所以「依單價由低到高排序，每檔買到限購上限才換下一檔」這個貪婪法，
+   對這批資料而言就等於全局花費最少的方案，不需要動態規劃這種更複雜的作法。
+   ------------------------------------------------------------
+   poolScope: 限定要買哪個池型的券（'mixed'|'daily'|'monthly'|'reprint_daily'|'reprint_mixed'|'reprint_monthly'）
+   needTickets: 還缺多少抽
+   ownedCounts: { pkgId: 已購買數量 } 用來扣除限購額度
+   ------------------------------------------------------------
+   協會補給的相依鏈（需照10→15→20...順序購買）用「依序嘗試解鎖」的方式處理：
+   貪婪法本來就是照單價排序買下去，買完10級後15級自然解鎖，天然符合鏈狀規則，
+   不需要像先前版本那樣把整條鏈打包成互斥選項才能避免斷鏈。
+   ------------------------------------------------------------
+   回傳: { picks: [{pkgId, name, qty, ntd, ticket, unitCost}], totalNTD, totalTickets, stillShort }
+   ------------------------------------------------------------ */
 function recommendPurchase(poolScope, needTickets, ownedCounts={}, priorityUnlocked={}){
   if(needTickets <= 0) return { picks:[], totalNTD:0, totalTickets:0, stillShort:0 };
 
   const ASSOC_CHAIN_IDS = ['assoc10','assoc15','assoc20','assoc25','assoc30','assoc35','assoc40','assoc50','assoc60','assoc65'];
-  const assocPkgs = ASSOC_CHAIN_IDS.map(id => PACKAGES.find(p=>p.id===id)).filter(Boolean);
 
-  const rawCandidates = PACKAGES.filter(p => {
-    if(!p.ticket || p.ticket<=0) return false;
-    if(ASSOC_CHAIN_IDS.includes(p.id)) return false; // 協會補給改用下方的組合選項處理，這裡排除單獨的每一級
-    if(p.poolScope === poolScope) return true;
-    if(p.poolScope === 'any_pool') return true;
-    return false;
-  }).map(p => ({
-    ...p, limit: p.limit === 'unlimited' ? Infinity : Math.max(0, p.limit - (ownedCounts[p.id]||0)),
-  })).filter(p => p.limit > 0);
-
-  // 找出目前已經買到第幾級（0代表都還沒買）
-  let ownedLevel = 0;
-  for(let i=0;i<assocPkgs.length;i++){
-    if((ownedCounts[assocPkgs[i].id]||0) > 0) ownedLevel = i+1;
-    else break;
-  }
-
-  // 協會補給鏈的各種「買到第幾級」方案彼此互斥（買到40級就不該再另外買到35級，因為完全重疊），
-  // 所以分別對每個結束等級（含完全不買協會補給）各跑一次完整DP，最後取全局花費最少的那個方案，
-  // 而不是把所有結束等級當成獨立商品交給同一次DP選擇（那樣會導致重疊等級被重複購買）。
-  let best = optimalPurchasePlan(rawCandidates, needTickets); // 完全不買協會補給的方案
-  let bestChainPkgs = [];
-  for(let endLevel=ownedLevel+1; endLevel<=assocPkgs.length; endLevel++){
-    const pkgsInRange = assocPkgs.slice(ownedLevel, endLevel);
-    const chainNtd = pkgsInRange.reduce((s,p)=>s+p.ntd, 0);
-    const chainTicket = pkgsInRange.reduce((s,p)=>s+p.ticket, 0);
-    const remainingNeed = Math.max(0, needTickets - chainTicket);
-    const subResult = optimalPurchasePlan(rawCandidates, remainingNeed);
-    const totalNTD = chainNtd + subResult.totalNTD;
-    const totalTickets = chainTicket + subResult.totalTickets;
-    // 若都已達標(totalTickets>=needTickets)，比較花費(便宜優先)；
-    // 若都不足，優先比較「補到的抽數」是否更多；避免已達標時還被"補更多但更貴"的方案誤判為更好。
-    const bestMet = best.totalTickets >= needTickets;
-    const thisMet = totalTickets >= needTickets;
-    let isBetter;
-    if(bestMet && thisMet){
-      isBetter = totalNTD < best.totalNTD;
-    } else if(!bestMet && !thisMet){
-      isBetter = totalTickets > best.totalTickets ||
-        (totalTickets === best.totalTickets && totalNTD < best.totalNTD);
-    } else {
-      isBetter = thisMet && !bestMet; // 達標優先於沒達標
-    }
-    if(isBetter){
-      best = { picks: subResult.picks, totalNTD, totalTickets };
-      bestChainPkgs = pkgsInRange;
-    }
-  }
-
-  const expandedPicks = [
-    ...bestChainPkgs.map(p => ({ pkgId: p.id, name: p.name, qty: 1, ntd: p.ntd, ticket: p.ticket, unitCost: p.ntd/p.ticket })),
-    ...best.picks,
-  ];
-
-  return {
-    picks: expandedPicks,
-    totalNTD: best.totalNTD,
-    totalTickets: best.totalTickets,
-    stillShort: Math.max(0, needTickets - best.totalTickets),
-  };
-}
-
-/* ------------------------------------------------------------
-   （舊版貪婪演算法保留供對照，不再被呼叫）
-   ------------------------------------------------------------
-   poolScope: 限定要買哪個池型的券（'mixed'|'daily'|'monthly'|'reprint_daily'|'reprint_mixed'）
-   needTickets: 還缺多少抽
-   ownedCounts: { pkgId: 已購買數量 } 用來扣除限購額度
-   priorityUnlocked: { pkgId: true } 用來處理協會補給的相依鏈解鎖狀態
-   ------------------------------------------------------------
-   回傳: { picks: [{pkgId, name, qty, ntd}], totalNTD, totalTickets, stillShort }
-   ------------------------------------------------------------ */
-function recommendPurchaseGreedy(poolScope, needTickets, ownedCounts={}, priorityUnlocked={}){
-  if(needTickets <= 0) return { picks:[], totalNTD:0, totalTickets:0, stillShort:0 };
-
-  // 候選禮包：poolScope符合(專屬池型) 或 any_pool(不限時黃券，任何池型皆可用，含復刻池)
-  const candidates = PACKAGES.filter(p => {
+  const allCandidates = PACKAGES.filter(p => {
     if(!p.ticket || p.ticket<=0) return false;
     if(p.poolScope === poolScope) return true;
     if(p.poolScope === 'any_pool') return true;
     return false;
   }).map(p => ({
     ...p,
+    limit: p.limit === 'unlimited' ? Infinity : Math.max(0, p.limit - (ownedCounts[p.id]||0)),
     unitCost: p.ntd / p.ticket,
-  })).sort((a,b) => a.unitCost - b.unitCost);
+  })).filter(p => p.limit > 0);
 
   let remaining = needTickets;
-  const picks = [];
   let totalNTD = 0;
+  const picks = [];
 
-  for(const p of candidates){
-    if(remaining <= 0) break;
-    // 協會補給相依鏈檢查：若此禮包requiresPrior未解鎖，跳過（除非該prior已在ownedCounts或本次picks中被購買）
-    if(p.requiresPrior){
-      const priorBought = (ownedCounts[p.requiresPrior]||0) > 0 || picks.some(x=>x.pkgId===p.requiresPrior);
-      if(!priorBought) continue;
-    }
-    const bought = ownedCounts[p.id] || 0;
-    const limit = p.limit === 'unlimited' ? Infinity : p.limit;
-    const availableQty = limit === Infinity ? Infinity : Math.max(0, limit - bought);
-    if(availableQty <= 0) continue;
-
-    let qty = Math.min(availableQty, Math.ceil(remaining / p.ticket));
-    if(qty <= 0) continue;
-    picks.push({ pkgId: p.id, name: p.name, qty, ntd: p.ntd*qty, ticket: p.ticket*qty, unitCost: p.unitCost });
-    totalNTD += p.ntd*qty;
-    remaining -= p.ticket*qty;
+  // 已解鎖的協會補給等級（依目前擁有狀態往前推）
+  let assocUnlockedUpTo = 0;
+  for(let i=0;i<ASSOC_CHAIN_IDS.length;i++){
+    if((ownedCounts[ASSOC_CHAIN_IDS[i]]||0) > 0) assocUnlockedUpTo = i+1;
+    else break;
   }
 
+  // 貪婪迴圈：每輪重新篩出「目前可買」的候選（協會補給隨鏈解鎖狀態動態出現），
+  // 取單價最低的那一項買到限購上限（或滿足缺口為止），直到補滿或所有候選都買完。
+  while(remaining > 0){
+    const buyable = allCandidates.filter(p => {
+      const bought = picks.find(x=>x.pkgId===p.id)?.qty || 0;
+      if(bought >= p.limit) return false;
+      const chainIdx = ASSOC_CHAIN_IDS.indexOf(p.id);
+      if(chainIdx >= 0 && chainIdx > assocUnlockedUpTo) return false; // 協會補給尚未輪到，跳過
+      return true;
+    });
+    if(buyable.length === 0) break;
+
+    buyable.sort((a,b) => a.unitCost - b.unitCost);
+    const cheapest = buyable[0];
+    const alreadyBought = picks.find(x=>x.pkgId===cheapest.id)?.qty || 0;
+    const availableQty = cheapest.limit - alreadyBought;
+    const qtyNeeded = Math.ceil(remaining / cheapest.ticket);
+    const qty = Math.min(availableQty, qtyNeeded);
+
+    const existing = picks.find(x=>x.pkgId===cheapest.id);
+    if(existing){
+      existing.qty += qty; existing.ntd += cheapest.ntd*qty; existing.ticket += cheapest.ticket*qty;
+    } else {
+      picks.push({ pkgId: cheapest.id, name: cheapest.name, qty, ntd: cheapest.ntd*qty, ticket: cheapest.ticket*qty, unitCost: cheapest.unitCost });
+    }
+    totalNTD += cheapest.ntd*qty;
+    remaining -= cheapest.ticket*qty;
+
+    const chainIdx = ASSOC_CHAIN_IDS.indexOf(cheapest.id);
+    if(chainIdx >= 0 && chainIdx === assocUnlockedUpTo && (existing?existing.qty:qty) >= cheapest.limit){
+      assocUnlockedUpTo = chainIdx + 1; // 買滿這一級（限購1），解鎖下一級
+    }
+  }
+
+  const totalTickets = picks.reduce((s,p)=>s+p.ticket, 0);
   return {
     picks,
     totalNTD,
-    totalTickets: needTickets - Math.max(0, remaining),
-    stillShort: Math.max(0, remaining),
+    totalTickets,
+    stillShort: Math.max(0, needTickets - totalTickets),
   };
 }
 
@@ -2452,7 +2416,7 @@ function renderTargetStagePerChar(){
     let badge = '';
     if(!fullRoster && idx===0) badge = '（主推）';
     else if(mode==='allPush' && idx<3) badge = '（初始自選）';
-    else if(mode==='fourPush' && idx===3) badge = '（不管）';
+    else if(mode==='fourPush' && idx===4) badge = '（不管）';
     else if(mode==='fourPush' && idx<3) badge = '（初始自選）';
     item.innerHTML = `
       <span class="drag-handle" data-drag-handle>⠿⠿</span>
