@@ -25,9 +25,13 @@
     --red: #e2637a;
     --amber: #e0a548;
 
-    --radius-lg: 20px;
-    --radius-md: 14px;
-    --radius-sm: 9px;
+    --radius-lg: 0px;   /* 大區塊(section/panel)：直角 */
+    --radius-md: 0px;   /* 中型元件(切換開關列/callout/combo卡/輸入框)：直角 */
+    --radius-sm: 0px;   /* 輸入框：直角 */
+    --radius-pill: 2px; /* 按鈕/標籤：近直角，保留極細倒角避免視覺過於銳利 */
+
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
     --font-ui: "Noto Sans TC", "PingFang TC", "Hiragino Sans TC", "Microsoft JhengHei", -apple-system, sans-serif;
     --font-mono: "JetBrains Mono", "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
@@ -47,6 +51,52 @@
   ::selection{ background: var(--accent-soft); }
 
   a{ color: var(--accent); }
+
+  /* ---------------- Motion system ---------------- */
+  @keyframes fadeInUp{
+    from{ opacity:0; transform: translateY(14px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @keyframes popIn{
+    0%{ opacity:0; transform: scale(0.85); }
+    60%{ opacity:1; transform: scale(1.04); }
+    100%{ opacity:1; transform: scale(1); }
+  }
+  @keyframes shimmerLine{
+    from{ background-position: -200px 0; }
+    to{ background-position: 200px 0; }
+  }
+  @keyframes spin{
+    to{ transform: rotate(360deg); }
+  }
+  @keyframes pulseRing{
+    0%{ box-shadow: 0 0 0 0 var(--accent-soft); }
+    100%{ box-shadow: 0 0 0 8px rgba(0,0,0,0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .hero, .section{
+    animation: fadeInUp .55s var(--ease-out) both;
+  }
+  .section:nth-of-type(1){ animation-delay: .04s; }
+  .section:nth-of-type(2){ animation-delay: .09s; }
+  .section:nth-of-type(3){ animation-delay: .14s; }
+  .section:nth-of-type(4){ animation-delay: .19s; }
+  .section:nth-of-type(5){ animation-delay: .24s; }
+  .section:nth-of-type(6){ animation-delay: .29s; }
+  .section:nth-of-type(7){ animation-delay: .34s; }
+
+  .stat-card{ animation: popIn .4s var(--ease-spring) both; }
+  .stat-card:nth-child(1){ animation-delay: .02s; }
+  .stat-card:nth-child(2){ animation-delay: .06s; }
+  .stat-card:nth-child(3){ animation-delay: .10s; }
+  .stat-card:nth-child(4){ animation-delay: .14s; }
+  .stat-card:nth-child(5){ animation-delay: .18s; }
+  .stat-card:nth-child(6){ animation-delay: .22s; }
+
+  .combo-card, .callout{ animation: fadeInUp .4s var(--ease-out) both; }
 
   /* ---------------- Top bar ---------------- */
   .topbar{
@@ -73,11 +123,12 @@
     border: 2px solid transparent;
     cursor: pointer;
     position: relative;
-    transition: transform .18s ease;
+    transition: transform .22s var(--ease-spring), border-color .15s;
     padding:0;
   }
-  .theme-dot:hover{ transform: scale(1.14); }
-  .theme-dot.active{ border-color: var(--text-main); }
+  .theme-dot:hover{ transform: scale(1.22) rotate(-6deg); }
+  .theme-dot:active{ transform: scale(0.92); }
+  .theme-dot.active{ border-color: var(--text-main); animation: pulseRing 1.2s var(--ease-out); }
   .theme-dot.active::after{
     content:"✓"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     color:#fff; font-size: 11px; font-weight:700; text-shadow: 0 0 2px rgba(0,0,0,0.35);
@@ -101,6 +152,37 @@
   }
   .hero p{ color: var(--text-sub); font-size: 14.5px; max-width: 640px; margin: 0; }
 
+  /* ---------------- Step navigation ---------------- */
+  .step-nav-wrap{
+    position: sticky; top: 57px; z-index: 30;
+    background: rgba(247,247,251,0.9);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    margin-top: 20px;
+  }
+  .step-nav{
+    max-width: 1120px; margin: 0 auto; padding: 0 24px;
+    display:flex; gap:2px; overflow-x:auto;
+    scrollbar-width: none;
+  }
+  .step-nav::-webkit-scrollbar{ display:none; }
+  .step-nav-item{
+    flex:none;
+    font-family: var(--font-ui); font-size: 12.5px; font-weight:500;
+    color: var(--text-sub); background: transparent; border:none;
+    padding: 12px 14px; cursor:pointer; white-space:nowrap;
+    display:flex; align-items:center; gap:7px;
+    border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  .step-nav-item:hover{ color: var(--text-main); }
+  .step-nav-item.active{ color: var(--accent); border-color: var(--accent); font-weight:700; }
+  .step-nav-item .step-num{
+    font-family: var(--font-mono); font-size: 10.5px; color: var(--text-dim);
+    padding: 2px 5px; background: var(--panel-alt); border:1px solid var(--line-soft);
+  }
+  .step-nav-item.active .step-num{ color: var(--accent); border-color: var(--accent-line); background: var(--accent-softer); }
+
   /* ---------------- Layout ---------------- */
   .wrap{ max-width: 1120px; margin: 0 auto; padding: 28px 24px 100px; display:flex; flex-direction:column; gap: 22px; }
 
@@ -120,7 +202,7 @@
     color: var(--accent);
     background: var(--accent-softer);
     border: 1px solid var(--accent-line);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 3px 10px;
   }
   .section-title{ font-family: var(--font-display); font-size: 18px; font-weight:700; color: var(--text-main); }
@@ -164,10 +246,12 @@
     border: 1.5px solid var(--line);
     background: var(--panel-alt);
     cursor:pointer; position:relative; flex:none;
-    transition: all .15s;
+    transition: all .18s var(--ease-out);
   }
+  .checkbox-row input[type=checkbox]:hover{ border-color: var(--accent-line); }
   .checkbox-row input[type=checkbox]:checked{
     background: var(--accent); border-color: var(--accent);
+    animation: popIn .25s var(--ease-spring);
   }
   .checkbox-row input[type=checkbox]:checked::after{
     content:""; position:absolute; left:5px; top:1px; width:5px; height:9px;
@@ -179,7 +263,7 @@
   .radio-pill{
     display:flex; align-items:center; gap:7px;
     font-size: 12.5px; padding: 8px 14px;
-    border: 1.5px solid var(--line); border-radius: 999px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-pill);
     background: var(--panel-alt); color: var(--text-sub);
     cursor:pointer; transition: all .15s;
   }
@@ -193,14 +277,16 @@
 
   button.btn{
     font-family: var(--font-ui); font-size: 13.5px; font-weight:600;
-    padding: 11px 22px; border-radius: 999px; border: none;
+    padding: 11px 22px; border-radius: var(--radius-pill); border: none;
     background: var(--accent); color: #fff; cursor:pointer;
-    transition: filter .15s, transform .1s;
+    transition: filter .15s, transform .16s var(--ease-out), box-shadow .16s var(--ease-out);
+    box-shadow: 0 1px 2px rgba(42,39,53,0.08);
   }
-  button.btn:hover{ filter: brightness(0.94); }
-  button.btn:active{ transform: scale(0.98); }
+  button.btn:hover{ filter: brightness(0.96); transform: translateY(-2px); box-shadow: 0 6px 16px -4px var(--accent-line); }
+  button.btn:active{ transform: translateY(0) scale(0.97); box-shadow: 0 1px 2px rgba(42,39,53,0.08); }
   button.btn.ghost{
     background: transparent; color: var(--accent); border: 1.5px solid var(--accent-line);
+    box-shadow: none;
   }
   button.btn.ghost:hover{ background: var(--accent-softer); }
   button.btn.small{ padding: 7px 14px; font-size: 12px; }
@@ -215,13 +301,14 @@
   .switch-row .sub{ font-size: 11.5px; color: var(--text-dim); margin-top:2px; }
   .switch{
     position:relative; width:40px; height:23px; flex:none;
-    background: #ddd9ec; border-radius:999px; cursor:pointer;
-    transition: background .18s;
+    background: #ddd9ec; border-radius:var(--radius-pill); cursor:pointer;
+    transition: background .22s var(--ease-out);
   }
+  .switch:hover{ filter: brightness(0.96); }
   .switch.on{ background: var(--accent); }
   .switch .knob{
     position:absolute; top:2px; left:2px; width:19px; height:19px;
-    background:#fff; border-radius:50%; transition: transform .18s;
+    background:#fff; border-radius:50%; transition: transform .28s var(--ease-spring);
     box-shadow: 0 1px 3px rgba(0,0,0,.18);
   }
   .switch.on .knob{ transform: translateX(17px); }
@@ -265,17 +352,22 @@
   .char-pool{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
   .char-chip{
     display:flex; align-items:center; gap:7px;
-    padding: 8px 15px 8px 8px; border-radius: 999px;
+    padding: 8px 15px 8px 8px; border-radius: var(--radius-pill);
     border: 1.5px solid var(--line); background: var(--panel-alt);
-    cursor:pointer; font-size: 13px; transition: all .15s;
+    cursor:pointer; font-size: 13px;
+    transition: transform .16s var(--ease-spring), border-color .15s, background .15s;
   }
+  .char-chip:hover{ transform: translateY(-1px); border-color: var(--accent-line); }
+  .char-chip:active{ transform: scale(0.96); }
   .char-chip .avatar{
     width:24px; height:24px; border-radius:50%;
     background: linear-gradient(135deg, var(--accent), var(--accent-line));
     display:flex; align-items:center; justify-content:center;
     font-size:11px; color:#fff; font-weight:700; flex:none;
+    transition: transform .2s var(--ease-spring);
   }
   .char-chip.selected{ border-color: var(--accent); background: var(--accent-softer); font-weight:600; }
+  .char-chip.selected .avatar{ transform: scale(1.1); }
   .char-chip.disabled{ opacity: 0.35; cursor:not-allowed; }
 
   .drag-list{ display:flex; flex-direction:column; gap:8px; }
@@ -283,16 +375,25 @@
     display:flex; align-items:center; gap:12px;
     background: var(--panel-alt); border: 1.5px solid var(--line-soft);
     border-radius: var(--radius-md); padding: 11px 14px;
-    cursor: grab; transition: box-shadow .15s, border-color .15s;
+    cursor: grab; transition: box-shadow .18s var(--ease-out), border-color .18s var(--ease-out), transform .18s var(--ease-out), opacity .18s;
   }
+  .drag-item:hover{ border-color: var(--accent-line); box-shadow: 0 2px 8px -2px rgba(42,39,53,0.08); }
   .drag-item:active{ cursor:grabbing; }
-  .drag-item.dragging{ opacity:0.4; }
-  .drag-item.drag-over{ border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-  .drag-handle{ color: var(--text-dim); font-size:14px; letter-spacing:-1px; user-select:none; }
+  .drag-item.dragging{ opacity:0.35; transform: scale(0.97) rotate(-0.6deg); }
+  .drag-item.drag-over{ border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); transform: translateX(3px); }
+  .drag-handle{
+    color: var(--text-dim); font-size:16px; letter-spacing:-1px; user-select:none;
+    transition: color .15s; cursor: grab;
+    padding: 10px 6px; margin: -10px -6px; /* 擴大觸控熱區但不影響版面 */
+    display:flex; align-items:center;
+  }
+  .drag-handle:active{ cursor: grabbing; color: var(--accent); }
+  .drag-item:hover .drag-handle{ color: var(--accent); }
   .drag-rank{
     width:24px; height:24px; border-radius:50%; flex:none;
     background: var(--accent); color:#fff; font-family:var(--font-mono); font-weight:700;
     font-size:11.5px; display:flex; align-items:center; justify-content:center;
+    transition: background .2s;
   }
   .drag-rank.rank-1{ background: var(--amber); }
   .drag-item .char-avatar{
@@ -310,8 +411,8 @@
   .milestone:last-child{ margin-bottom:0; }
   .milestone-label{ display:flex; justify-content:space-between; font-size:12px; color:var(--text-sub); margin-bottom:6px; }
   .milestone-label b{ color: var(--text-main); font-family: var(--font-mono); }
-  .bar-track{ height: 7px; border-radius:99px; background: var(--line-soft); overflow:hidden; }
-  .bar-fill{ height:100%; border-radius:99px; background: var(--accent); transition: width .3s; }
+  .bar-track{ height: 7px; border-radius:var(--radius-pill); background: var(--line-soft); overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:var(--radius-pill); background: var(--accent); transition: width .3s; }
   .bar-fill.done{ background: var(--green); }
 
   /* ---------------- Combo / plan cards ---------------- */
@@ -328,14 +429,14 @@
   /* ---------------- Tabs / pills ---------------- */
   .tab-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
   .tab-pill{
-    font-size:12.5px; padding: 8px 16px; border-radius:999px;
+    font-size:12.5px; padding: 8px 16px; border-radius:var(--radius-pill);
     border:1.5px solid var(--line); background: var(--panel-alt); color: var(--text-sub);
     cursor:pointer; transition: all .15s; font-weight:500;
   }
   .tab-pill.active{ background: var(--accent); color:#fff; border-color: var(--accent); font-weight:600; }
 
   ::-webkit-scrollbar{ height:8px; width:8px; }
-  ::-webkit-scrollbar-thumb{ background: var(--accent-line); border-radius:99px; }
+  ::-webkit-scrollbar-thumb{ background: var(--accent-line); border-radius:var(--radius-pill); }
   ::-webkit-scrollbar-track{ background: transparent; }
 
   @media (max-width: 640px){
@@ -351,8 +452,8 @@
 <div class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <span class="cn">深空儲值試算</span>
-      <span class="en">World Beyond Deep Space</span>
+      <span class="cn">戀與深空儲值試算</span>
+      <span class="en">Love and Deepspace Calculator</span>
     </div>
     <div class="theme-picker">
       <span class="label">主題色</span>
@@ -368,8 +469,20 @@
 
 <div class="hero">
   <div class="hero-eyebrow"><span class="dot"></span>限定池 · 復刻池 · 抽卡試算器</div>
-  <h1>把每一抽，算得明明白白</h1>
+  <h1>錢包清空加速器</h1>
   <p>設定訂閱、繼承狀態與目標階數，跑一萬次蒙地卡羅模擬，找出最划算的補抽方案。</p>
+</div>
+
+<div class="step-nav-wrap">
+  <div class="step-nav" id="stepNav">
+    <button class="step-nav-item" data-target="sec01"><span class="step-num">01</span>模擬區間</button>
+    <button class="step-nav-item" data-target="sec02"><span class="step-num">02</span>訂閱收益</button>
+    <button class="step-nav-item" data-target="sec03"><span class="step-num">03</span>協會補給</button>
+    <button class="step-nav-item" data-target="sec04"><span class="step-num">04</span>池型設定</button>
+    <button class="step-nav-item" data-target="sec05"><span class="step-num">05</span>模擬</button>
+    <button class="step-nav-item" data-target="sec06"><span class="step-num">06</span>已購登記</button>
+    <button class="step-nav-item" data-target="sec07"><span class="step-num">07</span>補抽推薦</button>
+  </div>
 </div>
 
 <div class="wrap">
@@ -476,6 +589,15 @@
           <label class="radio-pill"><input type="radio" name="reprintGen" value="3"> 1.0版本（3人，無秦徹／夏以晝）</label>
           <label class="radio-pill"><input type="radio" name="reprintGen" value="4"> 2.0版本（4人，無夏以晝）</label>
           <label class="radio-pill"><input type="radio" name="reprintGen" value="5" checked> 現行（5人）</label>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:16px;">
+        <label>抽卡策略</label>
+        <div class="radio-group">
+          <label class="radio-pill"><input type="radio" name="mixedStrategyMode" value="holdMain" checked> 死守主推（自選三位，拖拉排序決定優先順序）</label>
+          <label class="radio-pill"><input type="radio" name="mixedStrategyMode" value="fourPush"> 四推（拖拉前四位都要，第五位不管）</label>
+          <label class="radio-pill"><input type="radio" name="mixedStrategyMode" value="allPush"> All推（五位都要，中途自動換自選）</label>
         </div>
       </div>
 
@@ -889,23 +1011,31 @@ function simulateMonthlyPoolTarget(targetStage, poolSubtype='normal', config={})
 }
 
 /* ------------------------------------------------------------
-   混池：五位男主，自選三位+定向一位機制，含「心願值」機制：
+   混池：五位男主（或復刻時的3/4人版本），自選三位+定向一位機制，含「心願值」機制
+   ------------------------------------------------------------
+   機率模型（依使用者提供的實際規則修正）：
+   - 出金時：自選三位合計75%限定機率，剩餘25%由「常駐池」與「非自選限定角色」共享。
+     常駐池固定15張卡（5位角色×3張，不受復刻世代影響）；非自選限定卡數量＝
+     角色池人數(pool.length) − 3（自選三位）。例如全5人自選3位時，非自選2位、
+     各1張限定卡，加上15張常駐＝17張，25%機率平均分配到這17張。
+     其中「抽到常駐15張中的一張」不算任何人的進度；「抽到非自選限定卡」才讓該角色進度+1。
    - 心願值只在「當前這個混池」有效，開新混池時重置為0/1（不跨池繼承）
-   - 心願值0/1：正常機率判定。若出金，依 limitedGivenGoldProb 判定限定/常駐：
-       · 限定且為定向角色 → 心願值維持0，繼承狀態=小保底(guaranteedLimited=false)
-       · 限定但非定向角色 → 心願值變1，繼承狀態=小保底(guaranteedLimited=false)
-       · 常駐(歪卡)        → 心願值變1，繼承狀態=大保底(guaranteedLimited=true)
-   - 心願值1/1：下一抽直接鈃定出金且為定向角色（不受70抽保底池機率限制），
-     抽中後心願值歸0，繼承狀態=小保底
-   - 換定向或換自選時，心願值直接歸0（即使原本是1/1也會被浪費）
+   - 心願值0/1：正常機率判定，出金後才判定歸屬（限定/常駐、自選/非自選）
+   - 心願值1/1：下一抽出金了，保證是限定且保證是定向角色
    ------------------------------------------------------------
    多角色目標：targetCounts = { 角色名: 目標次數 }，只計算有設定目標的角色
    定向策略（strategy）：
-   - 'holdMain'：死守主推（真實玩家常用策略）。全程只定向 targetChars 中第一位（主推角色，
-     或由 mainCharacter 參數指定），直到主推達標為止才會考慮換人；其餘角色完全靠自然機率
-     被動獲得，不主動定向。若主推提前達標，才會依序定向換到下一位尚未達標的角色。
-   - 'sequential'：依序定向。從一開始就依 targetChars 給定順序，持續定向目前尚未達標的第一位，
-     該位達標後立即換下一位，讓每位角色都能享受心願值保底加速。
+   - 'holdMain'：死守主推。全程只定向目前自選中排序最前面尚未達標的角色。
+   - 'sequential'：依序定向。持續定向尚未達標的第一位，達標後立刻換下一位。
+   - 'allPush'：全員都要（all推）。初始自選為 rankedChars 前三位；死守自選中排序最前面
+     尚未達標的角色；當自選三位中有一位達標，自動用 rankedChars 中下一位尚未達標、
+     尚未在自選中的角色替補進自選，直到所有目標角色（含非自選）都達標為止。
+     非自選角色仍可能因「25%機率中的非自選限定卡份額」被自然命中而提前達標。
+   ------------------------------------------------------------
+   charPool: 這次混池實際開放的角色範圍（陣列），用於計算常駐/非自選卡池分母，
+             預設沿用 selectedThree（allPush模式會用rankedChars當作pool）。
+   rankedChars: allPush模式使用，代表拖拉排序後的「全員優先順序」（比selectedThree更長，
+                包含所有想拿到的角色，不限於三位）。
    ------------------------------------------------------------
    里程碑（依「本次卡池累計抽數」，不含繼承前池的抽數，玩家可自行勾選是否投入）：
    - useMilestoneTickets: 50/100/150/250抽各送5張限時券 → 視為額外完整抽卡機會，
@@ -914,25 +1044,36 @@ function simulateMonthlyPoolTarget(targetStage, poolSubtype='normal', config={})
    ------------------------------------------------------------ */
 const MIXED_TICKET_MILESTONES = [50, 100, 150, 250]; // 各送5抽
 const MIXED_BOX_MILESTONE = 200; // 送1張自選限定卡
+const MIXED_NORMAL_CARD_COUNT = 15; // 常駐池固定15張卡（5位角色×3張），不受復刻世代影響
 
 function simulateMixedMultiTarget(targetCounts, selectedThree, config={}){
   const {
     startCycleIndex = 0,
     startGuaranteedLimited = false,
     startCounts = {},
-    startCumulativePulls = 0, // 繼承的累計抽數起點（復刻混池繼承原限定混池累抽用）
+    startCumulativePulls = 0,
     useMilestoneTickets = false,
     useMilestoneBox200 = false,
-    strategy = 'holdMain', // 'holdMain' | 'sequential'
-    mainCharacter = null, // strategy='holdMain'時的主推角色，未指定則取targetChars第一位
+    strategy = 'holdMain', // 'holdMain' | 'sequential' | 'allPush'
+    mainCharacter = null,
+    charPool = null,
+    rankedChars = null,
     maxPulls = 5000,
   } = config;
 
+  let currentSelected = [...selectedThree];
+  const pool = charPool || (strategy==='allPush' ? (rankedChars||selectedThree) : selectedThree);
+  const nonSelectedSlots = Math.max(0, pool.length - 3);
+
   const targetChars = Object.keys(targetCounts).filter(c => targetCounts[c] > 0);
   targetChars.forEach(c => {
-    if(!selectedThree.includes(c)) throw new Error(`目標角色「${c}」必須在自選三位之內`);
+    if(!pool.includes(c)) throw new Error(`目標角色「${c}」必須在這次混池的角色範圍之內`);
   });
   if(targetChars.length === 0) return { totalPulls:0, met:true, counts:{...startCounts} };
+
+  if(strategy==='allPush' && !rankedChars){
+    throw new Error('allPush策略需要提供rankedChars（拖拉排序後的全員優先順序）');
+  }
 
   const mainChar = strategy==='holdMain' ? (mainCharacter || targetChars[0]) : null;
   if(strategy==='holdMain' && !targetChars.includes(mainChar)){
@@ -941,39 +1082,51 @@ function simulateMixedMultiTarget(targetCounts, selectedThree, config={}){
 
   let cycleIndex = startCycleIndex;
   let guaranteedLimited = startGuaranteedLimited;
-  let wishValue = 0; // 心願值：0 或 1，開新混池固定從0開始（不跨池繼承）
-  let totalPulls = 0; // 這次模擬「新花費」的抽數（回傳值，不含繼承部分）
-  let cumulativePulls = startCumulativePulls; // 累計抽數（含繼承起點），供里程碑判定使用
-  // 若繼承累計已經超過某些門檻，代表那些里程碑早就領過了，不重複贈送
+  let wishValue = 0;
+  let totalPulls = 0;
+  let cumulativePulls = startCumulativePulls;
   const usedTicketMilestones = new Set(MIXED_TICKET_MILESTONES.filter(m => startCumulativePulls >= m));
   let usedBoxMilestone = startCumulativePulls >= MIXED_BOX_MILESTONE;
   const counts = {...startCounts};
   const log = [];
 
-  function nextUnmetTarget(){
-    return targetChars.find(c => (counts[c]||0) < targetCounts[c]) || null;
+  function nextUnmetTargetIn(list){
+    return targetChars.filter(c => list.includes(c)).find(c => (counts[c]||0) < targetCounts[c]) || null;
   }
   function pickCurrentTarget(){
     if(strategy==='holdMain'){
-      // 主推未達標就死守主推；主推達標後才依序換下一位尚未達標的角色
       if((counts[mainChar]||0) < targetCounts[mainChar]) return mainChar;
-      return nextUnmetTarget();
+      return nextUnmetTargetIn(currentSelected);
     }
-    return nextUnmetTarget();
+    return nextUnmetTargetIn(currentSelected);
   }
-  let currentTarget = pickCurrentTarget();
-
   function allMet(){
     return targetChars.every(c => (counts[c]||0) >= targetCounts[c]);
   }
 
-  if(currentTarget){
-    log.push({ pull: 0, event:'switch_target', from: null, to: currentTarget, reason: strategy==='holdMain' ? `一開始死守主推${currentTarget}` : `依序定向，優先${currentTarget}` });
+  function maybeSwapSelected(){
+    if(strategy !== 'allPush') return null;
+    const metInSelected = currentSelected.filter(c => targetChars.includes(c) && (counts[c]||0) >= targetCounts[c]);
+    if(metInSelected.length===0) return null;
+    for(const metChar of metInSelected){
+      const candidate = rankedChars.find(c =>
+        !currentSelected.includes(c) && targetChars.includes(c) && (counts[c]||0) < targetCounts[c]
+      );
+      if(candidate){
+        const idx = currentSelected.indexOf(metChar);
+        currentSelected[idx] = candidate;
+        return { from: metChar, to: candidate };
+      }
+    }
+    return null;
   }
 
-  // 單次抽卡判定（共用邏輯，供主迴圈與里程碑送券共用）
-  // 修正重點：心願值只決定「出金後歸屬給誰」，完全不影響「這一抽是否出金」——
-  // 出金與否永遠照 goldRateAt(cycleIndex) 機率表判定，不會因心願值而跳過保底進度。
+  let currentTarget = pickCurrentTarget();
+
+  if(currentTarget){
+    log.push({ pull: 0, event:'switch_target', from: null, to: currentTarget, reason: strategy==='sequential' ? `依序定向，優先${currentTarget}` : `一開始死守${currentTarget}` });
+  }
+
   function doOnePull(source){
     let hitChar = null;
 
@@ -985,7 +1138,6 @@ function simulateMixedMultiTarget(targetCounts, selectedThree, config={}){
       cycleIndex = 0;
 
       if(wishValue === 1){
-        // 心願值1/1：這一抽出金了，保證是限定且保證是定向角色
         hitChar = currentTarget;
         wishValue = 0;
         guaranteedLimited = false;
@@ -996,14 +1148,22 @@ function simulateMixedMultiTarget(targetCounts, selectedThree, config={}){
           if(Math.random() < (1/3)){
             hitChar = currentTarget;
           } else {
-            const others = selectedThree.filter(c => c !== currentTarget);
+            const others = currentSelected.filter(c => c !== currentTarget);
             hitChar = others[Math.floor(Math.random()*others.length)];
             wishValue = 1;
           }
         } else {
-          hitChar = null; // 常駐歪卡
           guaranteedLimited = true;
           wishValue = 1;
+          const totalSlots = MIXED_NORMAL_CARD_COUNT + nonSelectedSlots;
+          const roll = Math.floor(Math.random()*totalSlots);
+          if(roll < MIXED_NORMAL_CARD_COUNT){
+            hitChar = null; // 純常駐，不算任何人
+          } else {
+            const nonSelected = pool.filter(c => !currentSelected.includes(c));
+            const idx = roll - MIXED_NORMAL_CARD_COUNT;
+            hitChar = nonSelected[idx] || null;
+          }
         }
       }
     }
@@ -1011,6 +1171,15 @@ function simulateMixedMultiTarget(targetCounts, selectedThree, config={}){
     if(gotGold && hitChar){
       counts[hitChar] = (counts[hitChar]||0)+1;
       log.push({ pull: totalPulls, character: hitChar, source });
+
+      if(strategy==='allPush'){
+        const swap = maybeSwapSelected();
+        if(swap){
+          wishValue = 0; // 換自選會改變75%機率池的候選名單，心願值必須立即歸零重新累積，不論原本是0或1
+          log.push({ pull: totalPulls, event:'swap_selected', from: swap.from, to: swap.to, reason: `${swap.from}已達標，換${swap.to}進自選(心願值歸零)` });
+        }
+      }
+
       if(hitChar === currentTarget && currentTarget && (counts[currentTarget]||0) >= targetCounts[currentTarget]){
         const prevTarget = currentTarget;
         currentTarget = pickCurrentTarget();
@@ -1034,7 +1203,6 @@ function simulateMixedMultiTarget(targetCounts, selectedThree, config={}){
       return { totalPulls, met:true, counts, log };
     }
 
-    // 里程碑：送5抽限時券（視為額外完整抽卡機會，不占用累計抽數）
     if(useMilestoneTickets){
       for(const m of MIXED_TICKET_MILESTONES){
         if(cumulativePulls >= m && !usedTicketMilestones.has(m)){
@@ -1047,10 +1215,6 @@ function simulateMixedMultiTarget(targetCounts, selectedThree, config={}){
       }
     }
 
-    // 里程碑：200抽送自選限定卡盒子（不算抽卡行為）。
-    // 策略為holdMain時，盒子應優先補給「非主推、尚未達標」的角色（玩家實際玩法：主推靠定向抽，副推留給盒子補）；
-    // 若所有非主推角色都已達標、只剩主推未達標，才補給主推。
-    // 策略為sequential時，直接補給目前定向角色（因為每位角色都是輪流定向，沒有主副之分）。
     if(useMilestoneBox200 && cumulativePulls >= MIXED_BOX_MILESTONE && !usedBoxMilestone){
       usedBoxMilestone = true;
       let boxTarget = null;
@@ -1063,6 +1227,13 @@ function simulateMixedMultiTarget(targetCounts, selectedThree, config={}){
       if(boxTarget){
         counts[boxTarget] = (counts[boxTarget]||0)+1;
         log.push({ pull: totalPulls, character: boxTarget, source:'milestone_box_200' });
+        if(strategy==='allPush'){
+          const swap = maybeSwapSelected();
+          if(swap){
+            wishValue = 0; // 換自選會改變75%機率池的候選名單，心願值必須立即歸零重新累積
+            log.push({ pull: totalPulls, event:'swap_selected', from: swap.from, to: swap.to, reason: `${swap.from}已達標，換${swap.to}進自選(心願值歸零)` });
+          }
+        }
         if(boxTarget===currentTarget && (counts[currentTarget]||0) >= targetCounts[currentTarget]){
           const prevTarget = currentTarget;
           currentTarget = pickCurrentTarget();
@@ -1078,6 +1249,7 @@ function simulateMixedMultiTarget(targetCounts, selectedThree, config={}){
 
   return { totalPulls, met:false, counts, log };
 }
+
 
 /* ============================================================
    里程碑贈禮（各池型固定抽數門檻贈送，不受機率影響，直接查表）
@@ -1531,69 +1703,66 @@ function redToTicket(redAmount){
    ------------------------------------------------------------
    這是有限背包問題（Bounded Knapsack）：每個禮包有價格、產出券數、限購數量，
    目標是用最少花費湊到至少 needTickets 張券（允許超過目標，但要花費最少）。
-   dp[k] = 恰好湊到「至少 k 張券」所需的最小花費，k 從 0 跑到 needTickets。
-   candidates 需已排除限購/相依鏈不可購買的項目（由呼叫端先過濾好）。
    ------------------------------------------------------------
-   實作採二進位拆分法：把「限購N個」的商品拆成 1,2,4,8...等倍數包，
-   每個倍數包視為獨立的0/1背包物品（只能選或不選一次），這樣才能正確保證
-   同一商品最終選取的總數量不超過限購上限，避免逐一數量迴圈疊加時
-   同一商品被間接重複計入超過限購次數的錯誤。
+   實作採二維DP：dp[i][k] = 只考慮candidates中前i件商品時，恰好湊到「至少k張券」
+   的最小花費。每個狀態明確對應「處理到第幾件商品」，回溯時天然不會有歧義——
+   不會像一維DP+快照寫法那樣，因為多個商品的轉移共用同一個索引k，導致回溯路徑
+   誤讀到「其他時間點才寫入、事後更划算」的路徑，造成同一商品被跨轉移重複計入
+   超過限購上限。此寫法雖然記憶體用量是 (商品數+1)×(needTickets+1)，
+   但候選商品數量通常在數十件以內、needTickets實務上也在數千以內，記憶體與效能
+   都在可接受範圍，正確性優先。
    ------------------------------------------------------------ */
-function expandBinaryPacks(candidates, needTickets){
-  const packs = [];
-  candidates.forEach(p => {
-    const maxQty = p.limit === Infinity ? Math.ceil(needTickets / p.ticket) + 1 : p.limit;
-    let remaining = maxQty;
-    let unit = 1;
-    while(remaining > 0){
-      const take = Math.min(unit, remaining);
-      packs.push({ pkgId: p.id, name: p.name, qty: take, ntd: p.ntd*take, ticket: p.ticket*take });
-      remaining -= take;
-      unit *= 2;
-    }
-  });
-  return packs;
-}
-
 function optimalPurchasePlan(candidates, needTickets){
   if(needTickets <= 0) return { picks:[], totalNTD:0, totalTickets:0 };
 
-  const dp = new Array(needTickets+1).fill(Infinity);
-  const choice = new Array(needTickets+1).fill(null);
-  dp[0] = 0;
+  const n = candidates.length;
+  // dp[i][k]：只用前i件商品，凑到至少k張券的最小花費
+  const dp = Array.from({length:n+1}, () => new Array(needTickets+1).fill(Infinity));
+  // pickQty[i][k]：dp[i][k]這個最優解中，第i件商品（1-indexed）買了幾個
+  const pickQty = Array.from({length:n+1}, () => new Array(needTickets+1).fill(0));
+  dp[0][0] = 0;
+  for(let k=1;k<=needTickets;k++) dp[0][k] = Infinity; // 沒有商品可買時，除了0以外都湊不到
 
-  const packs = expandBinaryPacks(candidates, needTickets);
-  // 標準0/1背包：每個「倍數包」只能選0次或1次，內層k由大到小掃描避免同一包被重複選取
-  packs.forEach(pack => {
-    for(let k=needTickets; k>=0; k--){
-      if(dp[k] === Infinity) continue;
-      const nk = Math.min(needTickets, k+pack.ticket);
-      if(dp[k] + pack.ntd < dp[nk]){
-        dp[nk] = dp[k] + pack.ntd;
-        choice[nk] = { pkgId: pack.pkgId, name: pack.name, qty: pack.qty, fromK: k, ntd: pack.ntd, ticket: pack.ticket };
+  for(let i=1;i<=n;i++){
+    const p = candidates[i-1];
+    const maxQty = p.limit === Infinity ? Math.ceil(needTickets / p.ticket) + 1 : p.limit;
+    for(let k=0;k<=needTickets;k++){
+      let best = dp[i-1][k]; // 這件商品買0個
+      let bestQty = 0;
+      for(let qty=1; qty<=maxQty; qty++){
+        const gain = p.ticket*qty;
+        const prevK = Math.max(0, k-gain); // 買qty個後要達到k，扣除這次產出，往前查前i-1件商品要湊到多少
+        // 因為dp索引k代表「至少k張」，買了qty個後從prevK出發即可（prevK可以是0，代表這qty個就夠了）
+        if(dp[i-1][prevK] === Infinity) continue;
+        const cost = dp[i-1][prevK] + p.ntd*qty;
+        if(cost < best){ best = cost; bestQty = qty; }
       }
+      dp[i][k] = best;
+      pickQty[i][k] = bestQty;
     }
-  });
+  }
 
   let bestK = needTickets;
-  if(dp[needTickets] === Infinity){
-    for(let k=needTickets; k>=0; k--){ if(dp[k]<Infinity){ bestK=k; break; } }
+  if(dp[n][needTickets] === Infinity){
+    for(let k=needTickets; k>=0; k--){ if(dp[n][k]<Infinity){ bestK=k; break; } }
   }
 
+  // 回溯：從第n件商品往回查，每一步都明確對應dp[i][k]，不會有歧義
   const pickMap = {};
   let k = bestK;
-  while(k > 0 && choice[k]){
-    const c = choice[k];
-    if(!pickMap[c.pkgId]) pickMap[c.pkgId] = { pkgId:c.pkgId, name:c.name, qty:0, ntd:0, ticket:0, unitNtd: c.ntd/c.qty, unitTicket: c.ticket/c.qty };
-    pickMap[c.pkgId].qty += c.qty;
-    pickMap[c.pkgId].ntd += c.ntd;
-    pickMap[c.pkgId].ticket += c.ticket;
-    k = c.fromK;
+  for(let i=n; i>=1; i--){
+    const qty = pickQty[i][k];
+    if(qty > 0){
+      const p = candidates[i-1];
+      if(!pickMap[p.id]) pickMap[p.id] = { pkgId:p.id, name:p.name, qty:0, ntd:0, ticket:0, unitCost: p.ntd/p.ticket };
+      pickMap[p.id].qty += qty;
+      pickMap[p.id].ntd += p.ntd*qty;
+      pickMap[p.id].ticket += p.ticket*qty;
+      const gain = p.ticket*qty;
+      k = Math.max(0, k-gain);
+    }
   }
-  const picks = Object.values(pickMap).map(p => ({
-    pkgId: p.pkgId, name: p.name, qty: p.qty, ntd: p.ntd, ticket: p.ticket,
-    unitCost: p.unitNtd/p.unitTicket,
-  }));
+  const picks = Object.values(pickMap);
   const totalNTD = picks.reduce((s,p)=>s+p.ntd, 0);
   const totalTickets = picks.reduce((s,p)=>s+p.ticket, 0);
   return { picks, totalNTD, totalTickets };
@@ -1602,50 +1771,58 @@ function optimalPurchasePlan(candidates, needTickets){
 /* ------------------------------------------------------------
    動態規劃（範圍版）：在 [minTarget, maxTarget] 這個「可接受的達標範圍」內，
    找出花費最少的組合（用於「盡量少溢出」的方案，範圍越窄代表對溢出的容忍度越低）
+   同樣採二維DP寫法，理由與 optimalPurchasePlan 相同（見上方註解）。
    ------------------------------------------------------------ */
 function optimalPurchasePlanBestInRange(candidates, minTarget, maxTarget){
   if(minTarget <= 0) return { picks:[], totalNTD:0, totalTickets:0 };
 
-  const dp = new Array(maxTarget+1).fill(Infinity);
-  const choice = new Array(maxTarget+1).fill(null);
-  dp[0] = 0;
+  const n = candidates.length;
+  const dp = Array.from({length:n+1}, () => new Array(maxTarget+1).fill(Infinity));
+  const pickQty = Array.from({length:n+1}, () => new Array(maxTarget+1).fill(0));
+  dp[0][0] = 0;
 
-  const packs = expandBinaryPacks(candidates, maxTarget);
-  packs.forEach(pack => {
-    for(let k=maxTarget; k>=0; k--){
-      if(dp[k] === Infinity) continue;
-      const nk = Math.min(maxTarget, k+pack.ticket);
-      if(dp[k] + pack.ntd < dp[nk]){
-        dp[nk] = dp[k] + pack.ntd;
-        choice[nk] = { pkgId: pack.pkgId, name: pack.name, qty: pack.qty, fromK: k, ntd: pack.ntd, ticket: pack.ticket };
+  for(let i=1;i<=n;i++){
+    const p = candidates[i-1];
+    const maxQty = p.limit === Infinity ? Math.ceil(maxTarget / p.ticket) + 1 : p.limit;
+    for(let k=0;k<=maxTarget;k++){
+      let best = dp[i-1][k];
+      let bestQty = 0;
+      for(let qty=1; qty<=maxQty; qty++){
+        const gain = p.ticket*qty;
+        const prevK = Math.max(0, k-gain);
+        if(dp[i-1][prevK] === Infinity) continue;
+        const cost = dp[i-1][prevK] + p.ntd*qty;
+        if(cost < best){ best = cost; bestQty = qty; }
       }
+      dp[i][k] = best;
+      pickQty[i][k] = bestQty;
     }
-  });
+  }
 
   // 在 [minTarget, maxTarget] 範圍內找花費最少的終點
   let bestK = -1, bestCost = Infinity;
   for(let k=minTarget; k<=maxTarget; k++){
-    if(dp[k] < bestCost){ bestCost = dp[k]; bestK = k; }
+    if(dp[n][k] < bestCost){ bestCost = dp[n][k]; bestK = k; }
   }
   if(bestK === -1){
-    // 範圍內完全湊不到，退而求其次找maxTarget以下最大可達點
-    for(let k=maxTarget; k>=0; k--){ if(dp[k]<Infinity){ bestK=k; break; } }
+    for(let k=maxTarget; k>=0; k--){ if(dp[n][k]<Infinity){ bestK=k; break; } }
   }
 
   const pickMap = {};
   let k = bestK;
-  while(k > 0 && choice[k]){
-    const c = choice[k];
-    if(!pickMap[c.pkgId]) pickMap[c.pkgId] = { pkgId:c.pkgId, name:c.name, qty:0, ntd:0, ticket:0, unitNtd: c.ntd/c.qty, unitTicket: c.ticket/c.qty };
-    pickMap[c.pkgId].qty += c.qty;
-    pickMap[c.pkgId].ntd += c.ntd;
-    pickMap[c.pkgId].ticket += c.ticket;
-    k = c.fromK;
+  for(let i=n; i>=1; i--){
+    const qty = pickQty[i][k];
+    if(qty > 0){
+      const p = candidates[i-1];
+      if(!pickMap[p.id]) pickMap[p.id] = { pkgId:p.id, name:p.name, qty:0, ntd:0, ticket:0, unitCost: p.ntd/p.ticket };
+      pickMap[p.id].qty += qty;
+      pickMap[p.id].ntd += p.ntd*qty;
+      pickMap[p.id].ticket += p.ticket*qty;
+      const gain = p.ticket*qty;
+      k = Math.max(0, k-gain);
+    }
   }
-  const picks = Object.values(pickMap).map(p => ({
-    pkgId: p.pkgId, name: p.name, qty: p.qty, ntd: p.ntd, ticket: p.ticket,
-    unitCost: p.unitNtd/p.unitTicket,
-  }));
+  const picks = Object.values(pickMap);
   const totalNTD = picks.reduce((s,p)=>s+p.ntd, 0);
   const totalTickets = picks.reduce((s,p)=>s+p.ticket, 0);
   return { picks, totalNTD, totalTickets };
@@ -1663,57 +1840,68 @@ function optimalPurchasePlanBestInRange(candidates, minTarget, maxTarget){
 function recommendPurchase(poolScope, needTickets, ownedCounts={}, priorityUnlocked={}){
   if(needTickets <= 0) return { picks:[], totalNTD:0, totalTickets:0, stillShort:0 };
 
+  const ASSOC_CHAIN_IDS = ['assoc10','assoc15','assoc20','assoc25','assoc30','assoc35','assoc40','assoc50','assoc60','assoc65'];
+  const assocPkgs = ASSOC_CHAIN_IDS.map(id => PACKAGES.find(p=>p.id===id)).filter(Boolean);
+
   const rawCandidates = PACKAGES.filter(p => {
     if(!p.ticket || p.ticket<=0) return false;
+    if(ASSOC_CHAIN_IDS.includes(p.id)) return false; // 協會補給改用下方的組合選項處理，這裡排除單獨的每一級
     if(p.poolScope === poolScope) return true;
     if(p.poolScope === 'any_pool') return true;
     return false;
-  });
+  }).map(p => ({
+    ...p, limit: p.limit === 'unlimited' ? Infinity : Math.max(0, p.limit - (ownedCounts[p.id]||0)),
+  })).filter(p => p.limit > 0);
 
-  // 逐步解開協會補給相依鏈：先篩掉未解鎖的（起始狀態），DP前先確保只放入「目前可購買」的項目。
-  // 相依鏈本身是「買了前一級才能買下一級」，這裡簡化為：只要prior已擁有(ownedCounts)就視為可買，
-  // 鏈狀依賴在DP的排列組合下不易表達，故採用「先把已解鎖的都當候選，DP選不選是它的自由」的近似處理，
-  // 對於「必須先買低級才能買高級」這種嚴格序列限制，改用不同輪次的候選集合逐步收斂。
-  function isUnlockedGivenPicks(p, extraOwned){
-    if(!p.requiresPrior) return true;
-    return (ownedCounts[p.requiresPrior]||0) > 0 || (extraOwned[p.requiresPrior]||0) > 0;
+  // 找出目前已經買到第幾級（0代表都還沒買）
+  let ownedLevel = 0;
+  for(let i=0;i<assocPkgs.length;i++){
+    if((ownedCounts[assocPkgs[i].id]||0) > 0) ownedLevel = i+1;
+    else break;
   }
 
-  // 過濾出扣除限購後還有剩餘額度的禮包，並轉換limit為Infinity或數字
-  function buildCandidates(extraOwned){
-    return rawCandidates
-      .filter(p => isUnlockedGivenPicks(p, extraOwned))
-      .map(p => {
-        const bought = (ownedCounts[p.id]||0) + (extraOwned[p.id]||0);
-        const limit = p.limit === 'unlimited' ? Infinity : Math.max(0, p.limit - bought);
-        return { ...p, limit };
-      })
-      .filter(p => p.limit > 0);
+  // 協會補給鏈的各種「買到第幾級」方案彼此互斥（買到40級就不該再另外買到35級，因為完全重疊），
+  // 所以分別對每個結束等級（含完全不買協會補給）各跑一次完整DP，最後取全局花費最少的那個方案，
+  // 而不是把所有結束等級當成獨立商品交給同一次DP選擇（那樣會導致重疊等級被重複購買）。
+  let best = optimalPurchasePlan(rawCandidates, needTickets); // 完全不買協會補給的方案
+  let bestChainPkgs = [];
+  for(let endLevel=ownedLevel+1; endLevel<=assocPkgs.length; endLevel++){
+    const pkgsInRange = assocPkgs.slice(ownedLevel, endLevel);
+    const chainNtd = pkgsInRange.reduce((s,p)=>s+p.ntd, 0);
+    const chainTicket = pkgsInRange.reduce((s,p)=>s+p.ticket, 0);
+    const remainingNeed = Math.max(0, needTickets - chainTicket);
+    const subResult = optimalPurchasePlan(rawCandidates, remainingNeed);
+    const totalNTD = chainNtd + subResult.totalNTD;
+    const totalTickets = chainTicket + subResult.totalTickets;
+    // 若都已達標(totalTickets>=needTickets)，比較花費(便宜優先)；
+    // 若都不足，優先比較「補到的抽數」是否更多；避免已達標時還被"補更多但更貴"的方案誤判為更好。
+    const bestMet = best.totalTickets >= needTickets;
+    const thisMet = totalTickets >= needTickets;
+    let isBetter;
+    if(bestMet && thisMet){
+      isBetter = totalNTD < best.totalNTD;
+    } else if(!bestMet && !thisMet){
+      isBetter = totalTickets > best.totalTickets ||
+        (totalTickets === best.totalTickets && totalNTD < best.totalNTD);
+    } else {
+      isBetter = thisMet && !bestMet; // 達標優先於沒達標
+    }
+    if(isBetter){
+      best = { picks: subResult.picks, totalNTD, totalTickets };
+      bestChainPkgs = pkgsInRange;
+    }
   }
 
-  // 協會補給相依鏈需要多輪迭代：DP選了低級後，高級才會解鎖，這裡跑最多10輪讓鏈逐步解開
-  let extraOwned = {};
-  let result = optimalPurchasePlan(buildCandidates(extraOwned), needTickets);
-  for(let round=0; round<10; round++){
-    const newExtraOwned = {};
-    result.picks.forEach(p => { newExtraOwned[p.pkgId] = p.qty; });
-    const changed = JSON.stringify(newExtraOwned) !== JSON.stringify(extraOwned);
-    extraOwned = newExtraOwned;
-    if(!changed) break;
-    const nextResult = optimalPurchasePlan(buildCandidates(extraOwned), needTickets);
-    // 優先比較「補到的抽數」是否更接近/達到目標，抽數相同時才比較花費是否更省；
-    // 避免因為只比花費，選到「花更少錢但補更少抽」的次優解導致提早停止迭代。
-    const nextIsBetter = nextResult.totalTickets > result.totalTickets ||
-      (nextResult.totalTickets === result.totalTickets && nextResult.totalNTD < result.totalNTD);
-    if(!nextIsBetter) break;
-    result = nextResult;
-  }
+  const expandedPicks = [
+    ...bestChainPkgs.map(p => ({ pkgId: p.id, name: p.name, qty: 1, ntd: p.ntd, ticket: p.ticket, unitCost: p.ntd/p.ticket })),
+    ...best.picks,
+  ];
 
   return {
-    picks: result.picks,
-    totalNTD: result.totalNTD,
-    totalTickets: result.totalTickets,
-    stillShort: Math.max(0, needTickets - result.totalTickets),
+    picks: expandedPicks,
+    totalNTD: best.totalNTD,
+    totalTickets: best.totalTickets,
+    stillShort: Math.max(0, needTickets - best.totalTickets),
   };
 }
 
@@ -1858,17 +2046,54 @@ function recommendPurpleBackup(shortDraws, useFirstPay=true, ownedCounts={}){
    ============================================================ */
 const $ = id => document.getElementById(id);
 
-/* ---------------- 主題色切換 ---------------- */
+/* ---------------- 主題色切換：從單一主色衍生出完整配色 ---------------- */
 const THEME_COLORS = ['#b0a3f8','#76caee','#f17dae','#e6736f','#ffae5c','#039d9d'];
+
 function hexToRgba(hex, alpha){
   const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
   return `rgba(${r},${g},${b},${alpha})`;
 }
+function hexToHsl(hex){
+  let r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h, s, l = (max+min)/2;
+  if(max===min){ h=0; s=0; }
+  else{
+    const d = max-min;
+    s = l>0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max){
+      case r: h = (g-b)/d + (g<b?6:0); break;
+      case g: h = (b-r)/d + 2; break;
+      case b: h = (r-g)/d + 4; break;
+    }
+    h *= 60;
+  }
+  return { h, s: s*100, l: l*100 };
+}
+function hsl(h, s, l){ return `hsl(${h.toFixed(1)}, ${s.toFixed(1)}%, ${l.toFixed(1)}%)`; }
+
 function applyTheme(color){
-  document.documentElement.style.setProperty('--accent', color);
-  document.documentElement.style.setProperty('--accent-soft', hexToRgba(color, 0.13));
-  document.documentElement.style.setProperty('--accent-softer', hexToRgba(color, 0.07));
-  document.documentElement.style.setProperty('--accent-line', hexToRgba(color, 0.33));
+  const { h, s } = hexToHsl(color);
+  const root = document.documentElement.style;
+
+  root.setProperty('--accent', color);
+  root.setProperty('--accent-soft', hexToRgba(color, 0.13));
+  root.setProperty('--accent-softer', hexToRgba(color, 0.07));
+  root.setProperty('--accent-line', hexToRgba(color, 0.33));
+
+  // 背景：極淺、低飽和但仍帶主色調性，不再是死白，隨主色的色相微幅偏移
+  root.setProperty('--bg', hsl(h, Math.min(s*0.35, 22), 97.5));
+  // 卡片底色：比背景稍亮或persistently接近白，但仍保留一絲主色調
+  root.setProperty('--panel', hsl(h, Math.min(s*0.12, 8), 99.3));
+  root.setProperty('--panel-alt', hsl(h, Math.min(s*0.28, 18), 97));
+  // 邊線：帶一點主色調的淺灰
+  root.setProperty('--line', hsl(h, Math.min(s*0.22, 14), 89));
+  root.setProperty('--line-soft', hsl(h, Math.min(s*0.2, 12), 93.5));
+  // 文字：深色但帶一絲主色調彩度，不是死黑，閱讀性不受影響
+  root.setProperty('--text-main', hsl(h, Math.min(s*0.18, 14), 19));
+  root.setProperty('--text-sub', hsl(h, Math.min(s*0.14, 10), 43));
+  root.setProperty('--text-dim', hsl(h, Math.min(s*0.1, 8), 62));
+
   document.querySelectorAll('.theme-dot').forEach(dot => {
     dot.classList.toggle('active', dot.dataset.color === color);
   });
@@ -1883,7 +2108,47 @@ document.querySelectorAll('.theme-dot').forEach(dot => {
   applyTheme(saved && THEME_COLORS.includes(saved) ? saved : THEME_COLORS[0]);
 })();
 
+/* ---------------- 步驟導覽：點擊跳轉 + 滾動偵測高亮 ---------------- */
+(function initStepNav(){
+  const navItems = [...document.querySelectorAll('.step-nav-item')];
+  const stepNavWrap = document.querySelector('.step-nav-wrap');
+
+  function getScrollOffset(){
+    const topbar = document.querySelector('.topbar');
+    const navHeight = stepNavWrap ? stepNavWrap.offsetHeight : 0;
+    return (topbar ? topbar.offsetHeight : 0) + navHeight + 12;
+  }
+
+  navItems.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      if(!target) return;
+      const y = target.getBoundingClientRect().top + window.scrollY - getScrollOffset();
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+  });
+
+  const sections = navItems.map(btn => document.getElementById(btn.dataset.target)).filter(Boolean);
+  function updateActive(){
+    const offset = getScrollOffset() + 4;
+    let activeIdx = 0;
+    sections.forEach((sec, i) => {
+      if(sec.getBoundingClientRect().top - offset <= 0) activeIdx = i;
+    });
+    navItems.forEach((btn, i) => btn.classList.toggle('active', i===activeIdx));
+  }
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if(!ticking){
+      window.requestAnimationFrame(() => { updateActive(); ticking = false; });
+      ticking = true;
+    }
+  });
+  updateActive();
+})();
+
 function todayISO(){ return new Date().toISOString().slice(0,10); }
+
 $('startDate').value = todayISO();
 $('endDate').value = addDaysISO(todayISO(), 29);
 
@@ -2060,43 +2325,78 @@ $('poolType').addEventListener('change', updatePoolTypeUI);
 
 /* ---------------- 混池：角色池管理（自選 / 復刻男主人數 / 拖拉排序） ---------------- */
 let availableCharPool = [...CHARACTERS]; // 目前池型下「可選」的角色範圍（限定池=全部5位；復刻依世代決定）
-let selectedThree = [...CHARACTERS.slice(0,3)]; // 目前選中的角色，陣列順序＝定向優先順序
+let selectedThree = [...CHARACTERS.slice(0,3)]; // 死守主推模式：選中的角色，陣列順序＝定向優先順序
+let rankedChars = [...CHARACTERS]; // All推模式：全員排序（順序＝優先順序，初始自選為前三位）
 const perCharTargetStage = {}; // 角色名 -> 目標階數(number) 或 undefined(不設定)
+
+function getMixedStrategyMode(){
+  return document.querySelector('input[name=mixedStrategyMode]:checked')?.value || 'holdMain';
+}
+function isFullRosterMode(mode){
+  return mode==='allPush' || mode==='fourPush';
+}
+document.querySelectorAll('input[name=mixedStrategyMode]').forEach(r => {
+  r.addEventListener('change', () => {
+    const mode = getMixedStrategyMode();
+    const fullRoster = isFullRosterMode(mode);
+    $('selectThreeFieldBox').style.display = (fullRoster || availableCharPool.length<=3) ? 'none' : 'block';
+    $('dragListLabel').textContent = mode==='allPush'
+      ? '拖拉調整全員優先順序，排第一位最先定向；達標後自動換下一位進自選（All推）'
+      : mode==='fourPush'
+      ? '拖拉調整優先順序，前四位都算目標，排第五位不管；達標後自動換下一位進自選（四推）'
+      : '拖拉調整定向優先順序，排第一位＝主推（死守策略）；同時設定各角色目標階數';
+    if(fullRoster){
+      rankedChars = rankedChars.filter(n=>availableCharPool.includes(n));
+      availableCharPool.forEach(n => { if(!rankedChars.includes(n)) rankedChars.push(n); });
+    } else {
+      // 切回死守模式時，清理不在selectedThree(3位)內的目標階數設定，避免殘留全員模式下的設定
+      Object.keys(perCharTargetStage).forEach(n => { if(!selectedThree.includes(n)) delete perCharTargetStage[n]; });
+    }
+    renderTargetStagePerChar();
+    renderStartCountsBox();
+  });
+});
 
 function updateReprintGenerationEffect(pt){
   if(pt !== 'reprint_mixed'){
     availableCharPool = [...CHARACTERS];
-    $('selectThreeFieldBox').style.display = 'block';
-    syncSelectedThreeToPool();
+    syncPoolsAfterRangeChange();
     return;
   }
   const gen = document.querySelector('input[name=reprintGen]:checked')?.value || '5';
   if(gen === '3'){
     availableCharPool = CHARACTERS.filter(n => n!=='秦徹' && n!=='夏以晝');
-    $('selectThreeFieldBox').style.display = 'none'; // 三人不需要自選，直接視為固定三位
-    selectedThree = [...availableCharPool];
   } else if(gen === '4'){
     availableCharPool = CHARACTERS.filter(n => n!=='夏以晝');
-    $('selectThreeFieldBox').style.display = 'block';
-    syncSelectedThreeToPool();
   } else {
     availableCharPool = [...CHARACTERS];
-    $('selectThreeFieldBox').style.display = 'block';
+  }
+  syncPoolsAfterRangeChange();
+}
+function syncPoolsAfterRangeChange(){
+  const mode = getMixedStrategyMode();
+  const onlyThreeAvailable = availableCharPool.length <= 3;
+  $('selectThreeFieldBox').style.display = (isFullRosterMode(mode) || onlyThreeAvailable) ? 'none' : 'block';
+
+  if(onlyThreeAvailable){
+    selectedThree = [...availableCharPool];
+  } else {
     syncSelectedThreeToPool();
   }
+  rankedChars = rankedChars.filter(n=>availableCharPool.includes(n));
+  availableCharPool.forEach(n => { if(!rankedChars.includes(n)) rankedChars.push(n); });
+
   renderSelectThree();
   renderTargetStagePerChar();
   renderStartCountsBox();
 }
 function syncSelectedThreeToPool(){
-  // 若目前選中的角色不在新的可選池內，移除；若選中數量不足3，從池中補齊
   selectedThree = selectedThree.filter(n => availableCharPool.includes(n));
   for(const n of availableCharPool){
     if(selectedThree.length>=3) break;
     if(!selectedThree.includes(n)) selectedThree.push(n);
   }
-  // 同步清理已不在選取範圍內角色的目標階數設定
-  Object.keys(perCharTargetStage).forEach(n => { if(!selectedThree.includes(n)) delete perCharTargetStage[n]; });
+  Object.keys(perCharTargetStage).forEach(n => { if(!availableCharPool.includes(n)) delete perCharTargetStage[n]; });
 }
 document.querySelectorAll('input[name=reprintGen]').forEach(r => {
   r.addEventListener('change', () => updateReprintGenerationEffect($('poolType').value));
@@ -2128,23 +2428,37 @@ function renderSelectThree(){
   });
 }
 
-/* 拖拉排序列表：順序＝定向優先順序，第一位＝死守策略主推 */
-let dragFromIndex = null;
+/* 拖拉排序列表：死守模式排selectedThree，全員模式(四推/All推)排rankedChars */
+
+function getDragList(){
+  return isFullRosterMode(getMixedStrategyMode()) ? rankedChars : selectedThree;
+}
+function setDragList(newList){
+  if(isFullRosterMode(getMixedStrategyMode())) rankedChars = newList;
+  else selectedThree = newList;
+}
 
 function renderTargetStagePerChar(){
   const box = $('targetStagePerCharBox');
   box.innerHTML = '';
-  selectedThree.forEach((name, idx) => {
+  const list = getDragList();
+  const mode = getMixedStrategyMode();
+  const fullRoster = isFullRosterMode(mode);
+  list.forEach((name, idx) => {
     const cur = perCharTargetStage[name];
     const item = document.createElement('div');
     item.className = 'drag-item';
-    item.draggable = true;
     item.dataset.index = idx;
+    let badge = '';
+    if(!fullRoster && idx===0) badge = '（主推）';
+    else if(mode==='allPush' && idx<3) badge = '（初始自選）';
+    else if(mode==='fourPush' && idx===3) badge = '（不管）';
+    else if(mode==='fourPush' && idx<3) badge = '（初始自選）';
     item.innerHTML = `
-      <span class="drag-handle">⠿⠿</span>
+      <span class="drag-handle" data-drag-handle>⠿⠿</span>
       <span class="drag-rank ${idx===0?'rank-1':''}">${idx+1}</span>
       <span class="char-avatar">${charInitial(name)}</span>
-      <span class="char-name">${name}${idx===0?'（主推）':''}</span>
+      <span class="char-name">${name}${badge}</span>
       <span class="stage-select">
         <select class="perCharStageSelect" data-char="${name}">
           <option value="" ${cur===undefined?'selected':''}>不設定</option>
@@ -2162,45 +2476,87 @@ function renderTargetStagePerChar(){
       renderMainCharacterSelect();
     });
 
-    item.addEventListener('dragstart', () => {
-      dragFromIndex = idx;
-      item.classList.add('dragging');
-    });
-    item.addEventListener('dragend', () => {
-      item.classList.remove('dragging');
-      box.querySelectorAll('.drag-item').forEach(el=>el.classList.remove('drag-over'));
-    });
-    item.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      item.classList.add('drag-over');
-    });
-    item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
-    item.addEventListener('drop', (e) => {
-      e.preventDefault();
-      item.classList.remove('drag-over');
-      const toIndex = parseInt(item.dataset.index);
-      if(dragFromIndex===null || dragFromIndex===toIndex) return;
-      const moved = selectedThree.splice(dragFromIndex, 1)[0];
-      selectedThree.splice(toIndex, 0, moved);
-      dragFromIndex = null;
-      renderTargetStagePerChar();
-    });
-
     box.appendChild(item);
   });
+  attachDragHandlers(box, fullRoster);
   renderMainCharacterSelect();
+}
+
+/* ------------------------------------------------------------
+   拖拉排序（Pointer Events版）：同時支援滑鼠與觸控裝置。
+   原生HTML5 draggable屬性在手機瀏覽器上完全不支援觸控操作，長按只會觸發系統的
+   文字選取/內容選單，故改用Pointer Events自行實作：只有握把圖示(.drag-handle)
+   區域可以發起拖拽，按下後用pointer座標追蹤要插入哪個位置，放開時完成排序。
+   ------------------------------------------------------------ */
+function attachDragHandlers(box, fullRoster){
+  let draggingEl = null;
+  let draggingIndex = null;
+  let placeholder = null;
+
+  function getItemAtPoint(x, y){
+    const items = [...box.querySelectorAll('.drag-item:not(.dragging)')];
+    for(const el of items){
+      const rect = el.getBoundingClientRect();
+      if(y >= rect.top && y <= rect.bottom) return el;
+    }
+    return null;
+  }
+
+  box.querySelectorAll('.drag-item').forEach(item => {
+    const handle = item.querySelector('[data-drag-handle]');
+    handle.style.touchAction = 'none'; // 阻止觸控裝置在握把上滑動時觸發頁面捲動/選字
+
+    handle.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      draggingEl = item;
+      draggingIndex = parseInt(item.dataset.index);
+      item.classList.add('dragging');
+      handle.setPointerCapture(e.pointerId);
+
+      const onMove = (ev) => {
+        const overEl = getItemAtPoint(ev.clientX, ev.clientY);
+        box.querySelectorAll('.drag-item').forEach(el=>el.classList.remove('drag-over'));
+        if(overEl && overEl!==draggingEl){
+          overEl.classList.add('drag-over');
+          placeholder = overEl;
+        }
+      };
+      const onUp = () => {
+        handle.releasePointerCapture(e.pointerId);
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+        box.querySelectorAll('.drag-item').forEach(el=>el.classList.remove('drag-over','dragging'));
+
+        if(placeholder && draggingIndex!==null){
+          const toIndex = parseInt(placeholder.dataset.index);
+          if(toIndex !== draggingIndex){
+            const curList = getDragList();
+            const moved = curList.splice(draggingIndex, 1)[0];
+            curList.splice(toIndex, 0, moved);
+            setDragList(curList);
+            if(!fullRoster) renderSelectThree();
+            renderTargetStagePerChar();
+          }
+        }
+        draggingEl = null; draggingIndex = null; placeholder = null;
+      };
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    });
+  });
 }
 function renderMainCharacterSelect(){
   // 主推角色＝拖拉列表排序後、且有設定目標階數的角色中排最前面的那位
   const sel = $('mainCharacterSelect');
-  const targetChars = selectedThree.filter(name => perCharTargetStage[name] !== undefined);
+  const list = getDragList();
+  const targetChars = list.filter(name => perCharTargetStage[name] !== undefined);
   sel.innerHTML = targetChars.map(name => `<option value="${name}">${name}</option>`).join('');
   if(targetChars.length>0) sel.value = targetChars[0];
 }
 function renderStartCountsBox(){
   const box = $('startCountsBox');
   box.innerHTML = '';
-  selectedThree.forEach(name => {
+  getDragList().forEach(name => {
     const field = document.createElement('div');
     field.className = 'field';
     field.innerHTML = `<label>${name}</label><input type="number" class="startCountInput" data-char="${name}" value="0" min="0" style="width:76px;">`;
@@ -2210,6 +2566,7 @@ function renderStartCountsBox(){
 renderSelectThree();
 renderTargetStagePerChar();
 renderStartCountsBox();
+updatePoolTypeUI(); // 頁面載入時主動執行一次，確保04區顯示狀態與06區禮包表格正確初始化（先前遺漏此呼叫，導致06區表格初次載入是空的，使用者輸入的已購數量無法對應到任何列）
 
 /* ---------------- 02 固定收益計算 ---------------- */
 let lastIncomeResult = null;
@@ -2290,6 +2647,7 @@ $('btnRunSimulation').addEventListener('click', () => {
   let stats;
 
   if(isMixedFamily){
+    const mode = getMixedStrategyMode();
     const targetCounts = {};
     Object.entries(perCharTargetStage).forEach(([name, stage]) => {
       targetCounts[name] = stage + 1;
@@ -2304,45 +2662,75 @@ $('btnRunSimulation').addEventListener('click', () => {
     });
     const useMilestoneTickets = $('mixedUseMilestoneTickets').checked;
     const useMilestoneBox200 = $('mixedUseMilestoneBox200').checked;
-    const chosenStrategy = 'holdMain'; // 拖拉排序第一位即為主推，固定採用死守策略作為主要展示
-    const mainCharacter = $('mainCharacterSelect').value;
     const startCumulativePulls = (pt==='reprint_mixed' && $('mixedReprintHasPulled').checked)
       ? (parseInt($('mixedReprintCumPulls').value)||0) : 0;
 
-    const resultsHold = [], resultsSeq = [];
-    for(let i=0;i<N;i++){
-      const rHold = simulateMixedMultiTarget(targetCounts, selectedThree, {
-        startCycleIndex, startGuaranteedLimited, startCounts, startCumulativePulls,
-        useMilestoneTickets, useMilestoneBox200,
-        strategy:'holdMain', mainCharacter, maxPulls:5000,
-      });
-      resultsHold.push(rHold.totalPulls);
-      const rSeq = simulateMixedMultiTarget(targetCounts, selectedThree, {
-        startCycleIndex, startGuaranteedLimited, startCounts, startCumulativePulls,
-        useMilestoneTickets, useMilestoneBox200,
-        strategy:'sequential', maxPulls:5000,
-      });
-      resultsSeq.push(rSeq.totalPulls);
-    }
-    const statsHold = computeStats(resultsHold);
-    const statsSeq = computeStats(resultsSeq);
-    lastMixedStrategyCompare = { holdMain: statsHold, sequential: statsSeq, chosenStrategy, mainCharacter };
-    stats = statsHold;
+    if(isFullRosterMode(mode)){
+      lastMixedStrategyCompare = null;
+      const results = [];
+      for(let i=0;i<N;i++){
+        const r = simulateMixedMultiTarget(targetCounts, rankedChars.slice(0,3), {
+          startCycleIndex, startGuaranteedLimited, startCounts, startCumulativePulls,
+          useMilestoneTickets, useMilestoneBox200,
+          strategy:'allPush', rankedChars, charPool: availableCharPool, maxPulls:8000,
+        });
+        results.push(r.totalPulls);
+      }
+      stats = computeStats(results);
 
-    let sampleRun = simulateMixedMultiTarget(targetCounts, selectedThree, {
-      startCycleIndex, startGuaranteedLimited, startCounts, startCumulativePulls,
-      useMilestoneTickets, useMilestoneBox200,
-      strategy: chosenStrategy, mainCharacter, maxPulls:5000,
-    });
-    for(let attempt=0; attempt<20; attempt++){
-      if(Math.abs(sampleRun.totalPulls - stats.median) <= stats.median*0.15) break;
-      sampleRun = simulateMixedMultiTarget(targetCounts, selectedThree, {
+      let sampleRun = simulateMixedMultiTarget(targetCounts, rankedChars.slice(0,3), {
+        startCycleIndex, startGuaranteedLimited, startCounts, startCumulativePulls,
+        useMilestoneTickets, useMilestoneBox200,
+        strategy:'allPush', rankedChars, charPool: availableCharPool, maxPulls:8000,
+      });
+      for(let attempt=0; attempt<20; attempt++){
+        if(Math.abs(sampleRun.totalPulls - stats.median) <= stats.median*0.15) break;
+        sampleRun = simulateMixedMultiTarget(targetCounts, rankedChars.slice(0,3), {
+          startCycleIndex, startGuaranteedLimited, startCounts, startCumulativePulls,
+          useMilestoneTickets, useMilestoneBox200,
+          strategy:'allPush', rankedChars, charPool: availableCharPool, maxPulls:8000,
+        });
+      }
+      lastMixedSampleRun = sampleRun;
+    } else {
+      const chosenStrategy = 'holdMain';
+      const mainCharacter = $('mainCharacterSelect').value;
+
+      const resultsHold = [], resultsSeq = [];
+      for(let i=0;i<N;i++){
+        const rHold = simulateMixedMultiTarget(targetCounts, selectedThree, {
+          startCycleIndex, startGuaranteedLimited, startCounts, startCumulativePulls,
+          useMilestoneTickets, useMilestoneBox200,
+          strategy:'holdMain', mainCharacter, maxPulls:5000,
+        });
+        resultsHold.push(rHold.totalPulls);
+        const rSeq = simulateMixedMultiTarget(targetCounts, selectedThree, {
+          startCycleIndex, startGuaranteedLimited, startCounts, startCumulativePulls,
+          useMilestoneTickets, useMilestoneBox200,
+          strategy:'sequential', maxPulls:5000,
+        });
+        resultsSeq.push(rSeq.totalPulls);
+      }
+      const statsHold = computeStats(resultsHold);
+      const statsSeq = computeStats(resultsSeq);
+      lastMixedStrategyCompare = { holdMain: statsHold, sequential: statsSeq, chosenStrategy, mainCharacter };
+      stats = statsHold;
+
+      let sampleRun = simulateMixedMultiTarget(targetCounts, selectedThree, {
         startCycleIndex, startGuaranteedLimited, startCounts, startCumulativePulls,
         useMilestoneTickets, useMilestoneBox200,
         strategy: chosenStrategy, mainCharacter, maxPulls:5000,
       });
+      for(let attempt=0; attempt<20; attempt++){
+        if(Math.abs(sampleRun.totalPulls - stats.median) <= stats.median*0.15) break;
+        sampleRun = simulateMixedMultiTarget(targetCounts, selectedThree, {
+          startCycleIndex, startGuaranteedLimited, startCounts, startCumulativePulls,
+          useMilestoneTickets, useMilestoneBox200,
+          strategy: chosenStrategy, mainCharacter, maxPulls:5000,
+        });
+      }
+      lastMixedSampleRun = sampleRun;
     }
-    lastMixedSampleRun = sampleRun;
   } else if(isDailyFamily){
     lastMixedStrategyCompare = null; lastMixedSampleRun = null;
     const targetStage = parseInt($('targetStage').value);
@@ -2420,10 +2808,13 @@ $('btnRunSimulation').addEventListener('click', () => {
 
   let sampleRunHtml = '';
   if(lastMixedSampleRun){
-    const events = lastMixedSampleRun.log.filter(l => l.event==='switch_target' || l.character);
+    const events = lastMixedSampleRun.log.filter(l => l.event==='switch_target' || l.event==='swap_selected' || l.character);
     const rows = events.map(l => {
       if(l.event==='switch_target'){
         return `<div>🔄 <b>第${l.pull}抽</b>：換定向 ${l.from||'（開始）'} → <b>${l.to}</b>　<span style="color:var(--text-dim);">(${l.reason})</span></div>`;
+      }
+      if(l.event==='swap_selected'){
+        return `<div>♻️ <b>第${l.pull}抽</b>：換自選 ${l.from} → <b>${l.to}</b>　<span style="color:var(--text-dim);">(${l.reason})</span></div>`;
       }
       const sourceLabel = l.source==='normal' ? '' : l.source && l.source.startsWith('milestone_ticket_') ? `（里程碑${l.source.split('_').pop()}抽贈券）` : l.source==='milestone_box_200' ? '（200抽自選盒）' : '';
       return `<div>🎯 第${l.pull}抽：命中 <b>${l.character}</b> ${sourceLabel}</div>`;
